@@ -1,5 +1,5 @@
 i1 = input("Geben Sie Ihr zu reduzierendes Polynom an (x^20+1 --> 100001 ohne Ox): ")
-i2 = input("Geben Sie Ihre erzeugende Relation an(x^20+1 --> 100001 ohne Ox): \n")
+i2 = input("Geben Sie Ihre erzeugende Relation an (x^20+1 --> 100001 ohne Ox): ")
 
 try:
     ini1 = format(int(i1, 16), "b")  # Convert to binary and remove "0b" prefix
@@ -35,26 +35,37 @@ def shifter(var1, var2):
     highestpoly1 = int(highestpoly1)
     highestpoly2 = int(highestpoly2)
 
-    x = abs(highestpoly1 - highestpoly2)
+    x = highestpoly1 - highestpoly2
     print(x)
-
     return x
 
-def modreduct(strini1, strini2):
+def modreduct(strini1, strini2, xlast, counter = 0):
     x = shifter(strini1, strini2)
-    int_str1 = int(strini1, 2)
-    int_str2 = int(strini2, 2)
 
-    if x != 0:
-        outputstr = int_str1 ^ (int_str2 << x)
-        return modreduct(format(outputstr, "b"), strini2)
+    if x < 0:
+        print("There is nothing to do.")
+        result = strini1
+        return result
     else:
-        outputstr = int_str1 ^ int_str2
-        return format(outputstr, "b")
+        int_str1 = int(strini1, 2)
+        int_str2 = int(strini2, 2)
 
-result = modreduct(ini1, ini2)
+        if x == xlast and counter >= 1:
+            outputstr = int_str1 ^ int_str2
+            result = format(outputstr, "b")
+            return result
+
+        elif x != 0:
+            outputstr = int_str1 ^ (int_str2 << x)
+            result = modreduct(format(outputstr, "b"), strini2, x, counter + 1)
+            return result
+
+        else:
+            outputstr = int_str1 ^ int_str2
+            result = format(outputstr, "b")
+            return result
+
+result = modreduct(ini1, ini2, -1)
 hexstr_result = "0x" + hex(int(result, 2))[2:]
-hex_result =  hex(int(result, 2))[2:]
-
+hex_result = hex(int(result, 2))[2:]
 print(hexstr_result)
-
